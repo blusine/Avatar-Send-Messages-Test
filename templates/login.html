@@ -1,0 +1,32 @@
+{% from 'header.html' import header %}
+<!DOCTYPE html>
+<html>
+  <head> {{ header(title) }} </head>
+  <body>
+    <div id = "container">
+      <h1>
+        Avatar Learning Center Classroom Report Form
+      </h1>
+        
+      <p>Welcome to <em>my</em> brand new website. This site will be my <strong>new<strong> home on the web. <br><br> Please log in to your class to view student list. <br>
+      </p>
+          
+      <form method = "POST" action = "/">
+        <fieldset>
+          <legend>Login Info</legend>
+          {{ form.csrf_token }}
+          <label for="username">Zoom Email:</label>
+    			{{ form.username }}
+          <label for="password">Zoom Password:</label>
+          {{ form.password }}
+          <label for="classroom">Class:</label>
+          {{ form.classroom }}
+  
+          <button>Login</button>
+        </fieldset>
+      </form>
+  
+    </div>      
+  </body>
+</html>
+
