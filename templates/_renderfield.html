@@ -1,5 +1,5 @@
 {% macro renderfield(field) %}
-{{ field.label }}
+  <b> {{ field.label }} </b>
 &nbsp
 {{ field(**kwargs)|safe }}
 <ul>
