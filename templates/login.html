@@ -1,29 +1,28 @@
 {% from 'header.html' import header %}
+{% from '_renderfield.html' import renderfield %}
 <!DOCTYPE html>
 <html>
   <head> {{ header(title) }} </head>
   <body>
-    <div id = "container">
+    <div class = "container">
       <h1>
         Avatar Learning Center Classroom Report Form
       </h1>
         
-      <p>Welcome to <em>my</em> brand new website. This site will be my <strong>new<strong> home on the web. <br><br> Please log in to your class to view student list. <br>
+      <p>Welcome to <em>my</em> brand new website. This site will be my <strong>new home on the web. <br><br> Please log in to your class to view student list. <br>
       </p>
           
       <form method = "POST" action = "/">
-        <fieldset>
+        {{ form.csrf_token }}
+        <fieldset class = fieldset-auto-width>
           <legend>Login Info</legend>
           {{ form.csrf_token }}
-          <label for="username">Zoom Email:</label>
-    			{{ form.username }}
-          <label for="password">Zoom Password:</label>
-          {{ form.password }}
-          <label for="classroom">Class:</label>
-          {{ form.classroom }}
-  
+    			{{ renderfield(form.username) }}
+          {{ renderfield(form.password) }}
+          {{ renderfield(form.classroom) }}
           <button>Login</button>
         </fieldset>
+          </strong>
       </form>
   
     </div>      

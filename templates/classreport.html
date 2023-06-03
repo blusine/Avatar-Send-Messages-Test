@@ -1,0 +1,69 @@
+{% from 'header.html' import header %}
+{% from '_renderfield.html' import renderfield %}
+<!DOCTYPE html>
+<html>
+  <head> {{ header(title) }} </head>
+  <body>
+    <div class = "container">
+      <h1>
+        Avatar Learning Center Classroom Report Form
+      </h1>
+      <br>
+      <h4> Report student performance accurately! <br><br>
+      </h4>
+      
+      <form method = ["GET", "POST"] action = "/classreport">
+        {{ form.csrf_token }}
+
+        {{ renderfield(form.date) }}
+        {{ renderfield(form.classroom) }}
+        {{ renderfield(form.teachername) }}
+        
+        <br><hr><br>
+        
+        <fieldset class = fieldset-auto-width style = "
+    padding: 6px; input: margin: 0.5rem; ">
+        <legend style = "background-color: #fff; color: #1a4171; padding: 1px 1px;font-size:20px">Material difficulty level for the class</legend>
+          <label id = "easy"> <b> Easy </b> </label> &nbsp
+        <div class="form-check-inline">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1">
+        <label class="form-check-label" for="inlineRadio1"><b>1</b></label>
+        </div>
+        
+      <div class="form-check-inline">
+        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="2">
+        <label class="form-check-label" for="inlineRadio2"><b>2</b></label>
+      </div>
+      <div class="form-check-inline">
+        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="3">
+        <label class="form-check-label" for="inlineRadio3"><b>3</b></label> 
+      </div>
+      <div class="form-check-inline">
+        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="4">
+        <label class="form-check-label" for="inlineRadio4"><b>4</b></label> 
+      </div>
+      <div class="form-check-inline">
+        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value="5">
+        <label class="form-check-label" for="inlineRadio5"><b>5</b></label> 
+      </div>
+        &nbsp
+        <label id = "easy"> <b>Hard</b> </label>
+        </fieldset>
+
+        <br><hr><br>
+        
+              <fieldset class = fieldset-auto-width style = "
+    padding: 6px; input: margin: 0.5rem; ">
+        <legend style = "background-color: #fff; color: #1a4171; padding: 1px 1px;font-size:20px">Please evaluate performance criteria</legend>
+
+
+
+              </fieldset>
+          
+      </form>
+
+  
+    </div>      
+  </body>
+</html>
+

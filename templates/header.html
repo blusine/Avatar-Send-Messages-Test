@@ -4,64 +4,69 @@
 	<!--p class="brand">Header</p-->
   <meta charset="utf-8">
   <meta name = "viewport" content="width=device-width, initial-scale=1.0">
-  <!--link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
   </head>
     <title>Avatar Learning Center</title>
-    <img src = 'https://avatar-send-messages-test--lusinebaghdasa1.repl.co/static/Avatar%20Logo.png' height = '60' >
+    <img src = 'https://avatar-send-messages-test--lusinebaghdasa1.repl.co/static/Avatar%20Logo.png' height = '60'>
 
     <style>
   		body {
   			font: 100% arial, helvetica, sans-serif;
   		}
   		fieldset {
-  			padding: 0 1em 1em 1em;
+  			padding: 1em 1em 1em 1em;
   		}
+      
+      fieldset-auto-width {
+        display: inline-block;
+      }
+      
   		legend {
   			padding: 1em;
   		}
+      
+      container {
+        max-width = 720 px;
+        margin: 0 auto ;
+        justify-content: center;
+      }
 
-      ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
+      .topnav {
         overflow: hidden;
-        background-color: #EDED95;
+        background-color: #EDED95
       }
 
-      li {
+      .topnav a {
         float: left;
-      }
-
-      li a {
-        display: block;
-        color: black;
+        color: #1a4171;
         text-align: center;
-        padding: 14px 16px;
+        padding: 14px 8px;
         text-decoration: none;
+        font-size: 17px;
       }
 
-      li a:hover {
+      .topnav a:hover {
         background-color: #fddd54;
+        color: black;
       }
-      #container {
-        max-width = 520 px;
-        margin: 0 auto;
-      }
+      
     </style>
   
   	{% if title %}
   		<p class="page-title">{{ title }}</p>
   	{% endif %}
-  	<nav>
-  		<ul class="links">
-        <li class="links__link"><a href="https://avatarlc.com/" {{ 'nav__link--active' if request.path == "https://avatarlc.com/" }} >Home</
-        </li>
+  
+  	<nav class="topnav" style="background-color: #EDED95;">
+
+  		<!--ul class="links"-->
+        <a class="links__link"><a href="https://avatarlc.com/" {{ 'nav__link--active' if request.path == "https://avatarlc.com/" }} >Home</
+        </a>
         
-  			<li class="links__link"><a href="{{ url_for('login') }}" {{ 'nav__link--active' if request.path == url_for('login') }} >Login</a>
-        </li>
+  			<a class="links__link"><a href="{{ url_for('login') }}" {{ 'nav__link--active' if request.path == url_for('login') }} >Login</a>
+        </a>
   			<!--li class="links__link"><a href="#">Blog</a></li>
   			<li class="links__link"><a href="#">Profile</a></li-->
-  		</ul>
+  		<!--/ul-->
   	</nav>
 </header>
 {% endmacro %}
