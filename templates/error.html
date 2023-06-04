@@ -7,11 +7,12 @@
 <body>
   <div class = "container">
     <main class="main main--error">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <h1> {{ header_message }} </h1>
         <p>
             {{ body_message }}
         </p>
-        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('login') }}">Login again</a>
     </main>
   </div>
 </body>

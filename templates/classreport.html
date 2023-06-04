@@ -12,7 +12,7 @@
       <h4> Report student performance accurately! <br><br>
       </h4>
       
-      <form method = ["GET", "POST"] action = "/classreport">
+      <form method = ["GET", "POST"] action = "/submitted">
         {{ form.csrf_token }}
 
         {{ renderfield(form.date) }}
@@ -68,7 +68,7 @@
                     {% for row in data %}
                       <tr class = table-row>
                         <td class = table-cell> {{ row }} </td>
-                        <td class = table-cell> <input type="checkbox" name="attendance"> </td>
+                        <td class = table-cell> <input type="checkbox" name="attendance" id = row.id > </td>
                         <td class = table-cell> <input type="checkbox" name="homework"> </td>
                         <td class = table-cell>
                           <select name="performance" id="performance">
@@ -99,11 +99,12 @@
         <legend style = "background-color: #fff; color: #1a4171; padding: 1px 1px;font-size:20px">General comments about today's class</legend>
                   
       <div class = text-area>
-				<textarea rows="5" cols="70" name="message" id="message"></textarea>
+				<textarea rows="5" cols="80" name="message" id="message"></textarea>
 			</div>
       </fieldset>
 
-        <button type="button" class="btn btn-primary">Submit</button>
+        <!--button type="button" class="btn btn-primary" onclick="submitted()">Submit</button-->
+        <input type = "submit" value="Submit" class="btn btn-primary">
 
       </form>
 

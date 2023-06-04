@@ -3,7 +3,9 @@ from flask_wtf import FlaskForm, CSRFProtect
 from wtforms import StringField, PasswordField, DateField, RadioField
 from wtforms.validators import InputRequired, Email
 from datetime import date as dt
-from utils import read_data
+
+
+from utils import read_data, send_sms, save_data
 
 app = Flask('__name__')
 csrf = CSRFProtect(app)
@@ -33,9 +35,9 @@ def login():
       form2 = ReportForm(teachername = teachername, date = dt.today())
       #classroom = request.form.get('classroom')
       df2 = list(df["Student Name"])
-      headings = ['Attendance', 'Homework', 'Academic Performance', 'Comments?', 'Tardy - Send SMS']
+      headings = ['Attendance', 'Homework', 'Academic Performance',
+                  'Comments', 'Tardy - Send SMS']
       return render_template('classreport.html', form = form2, headings = headings, data = df2)
-      #return f'<h1> data </h1> <br><br> <h2> {df} </h2'
     else:
       header_message = "Wrong Input"
       body_message = "Incorrect Email, Password or Class Code"
@@ -48,10 +50,21 @@ def classreport():
   form2 = ReportForm()
   return render_template('classreport.html', form = form2)
 
-@app.route('/error/<header_message>/<body_message>', methods = ["GET", "POST"])
+@app.route('/submitted', methods = ["GET", "POST"])
+def submitted():
+  header_message = "Thank you!"
+  body_message = "Avatar Learning Center Classroom Report Form has been submitted."
+  #if request.method == 'POST':
+  result = request.form
+  save_data(result)
+  #return render_template('submitted.html')
+  return redirect(url_for('error_message', header_message=header_message , body_message=body_message))
+  
+@app.route('/error/<header_message>/<body_message>' , methods = ["GET", "POST"])
 def error_message(header_message, body_message):
     return render_template("error.html", header_message=header_message, body_message=body_message)
   
 if (__name__) == "__main__":
-  import pandas as pd
+  #import pandas as pd
+  csrf = CSRFProtect(app)
   app.run(host='0.0.0.0', port=8080, debug = True)

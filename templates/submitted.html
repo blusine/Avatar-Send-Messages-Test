@@ -1,0 +1,21 @@
+{% from 'header.html' import header %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>{{ header(title) }}</head>
+
+<body>
+  <div class = "container">
+    <form method = ["GET", "POST"]>
+      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+      <!--input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/-->
+        <h1> Thank you! </h1>
+        <p>
+            Avatar Learning Center Classroom Report Form has been submitted.
+        </p>
+        <a href="{{ url_for('login') }}">Login again</a>
+    </form>
+  </div>
+</body>
+
+</html>
