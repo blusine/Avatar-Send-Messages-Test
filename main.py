@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, json
 from flask_wtf import FlaskForm, CSRFProtect
 from wtforms import StringField, PasswordField, DateField, FieldList, FormField, BooleanField
 #from wtforms import RadioField, TextAreaField, SelectField
@@ -7,12 +7,20 @@ from wtforms.validators import InputRequired, Email
 from datetime import date as dt
 
 from utils import read_data, fix_a_num, send_sms
+import os
 
 app = Flask('__name__')
 csrf = CSRFProtect(app)
 app.config['SECRET_KEY'] = 'Mysecret!'
 app.jinja_env.lstrip_blocks = True
 app.jinja_env.trim_blocks = True
+
+filename = os.getcwd() + "/data/twilio_keys.json"
+with open(filename) as test_file:
+    twilio_keys = json.load(test_file)
+print("twilio_keys, ", twilio_keys)
+app.config['account_sid'] = twilio_keys["account_sid"]
+app.config['TWILIO_AUTH_TOKEN'] = twilio_keys["TWILIO_AUTH_TOKEN"]
 
 class LoginForm(FlaskForm):
   username = StringField('Zoom Email:', validators=[InputRequired("Input Required!"),  Email()] )
@@ -52,13 +60,9 @@ def login():
     if (df is not None) & (not df.empty):
       teachername = df["Teacher"].iloc[0]
       form2 = ReportForm(teachername = teachername, date = dt.today())
-      #form2 = TableForm()
-      #df2 = list(df["Student Name"])
-      #df3 = list(df["Parent phone"])
       df["Parent phone"] = df["Parent phone"].apply(lambda x: fix_a_num(x))
       df2 = df[["Student Name", "Parent phone"]]
       
-      #print("phone2 ", df2['Parent phone'])
       headings = ['Attendance', 'Homework', 'Academic Performance',
                   'Comments', 'Tardy - Send SMS']
       headings = ['Tardy - Send SMS']
@@ -67,7 +71,6 @@ def login():
     else:
       header_message = "Wrong Input"
       body_message = "Incorrect Email, Password or Class Code"
-      #return f'<h1> data </h1> <br><br> <h2> {df} </h2'
       return redirect(url_for('error_message', header_message=header_message , body_message=body_message))
   return render_template('login.html', form = form)
 
@@ -86,37 +89,18 @@ def classreport():
 
 @app.route('/smsreport', methods = ["GET", "POST"])
 def smsreport():
-  #form = TableForm()
-  #if request.method == "POST":
   form = request.form
-    #result = request.form.getlist("sms")
-  #r2 = save_data(result)
-  #print("sms2: ", form.to_dict())
-    #r2 = save_data(result)
-    #redirect(url_for('submitted'))
   return render_template('smsreport.html', form = form)
 
 @app.route('/submitted', methods = ["GET", "POST"])
 def submitted():
-  #result = request.form.getlierrorst("sms")
-  #result = request.form
-  #result = request.form.get("sms", False)
-  #result = request.form["sms"]
-
   form = request.form
-  #print("from submitted1: ", form.to_dict())
-  print("from submitted2: ", form.getlist("sms"))
-  print("from submitted3: ", form.getlist("phone"))
-  print("from submitted4: ", form.getlist("student"))
   to_sms = form.getlist("sms")
-  print("sms3: ", to_sms)
   phone_numbers = form.getlist("phone")
   student_names = form.getlist("student")
   for sms in to_sms:
     sms_int = int(sms)
-    print("name" , student_names[sms_int])
-    print("phone", phone_numbers[sms_int])
-    send_sms(student_names[sms_int], phone_numbers[sms_int])
+    send_sms(student_names[sms_int], phone_numbers[sms_int], app.config['account_sid'], app.config['TWILIO_AUTH_TOKEN'])
   
   header_message="Thank you!"
   body_message="Avatar Learning Center Classroom Report Form has been submitted."
@@ -127,6 +111,5 @@ def error_message(header_message, body_message):
     return render_template("error.html", header_message=header_message, body_message=body_message)
   
 if (__name__) == "__main__":
-  #import pandas as pd
   csrf = CSRFProtect(app)
   app.run(host='0.0.0.0', port=8080, debug = True)

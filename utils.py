@@ -21,30 +21,31 @@ def read_data(username, password, classcode):
 def username_validator(username, password):
   import pandas as pd
   import os
+  from werkzeug.security import check_password_hash
   x = os.getcwd()
   df = pd.read_csv(x + '/data/username_validator.csv')
   cols = ['username', 'password']
   df[cols] = df[cols].astype(str)
   df = df[df['username'] == username]
   if (not df.empty):
-    if (df['password'].iloc[0] == password):
+    #if (df['password'].iloc[0] == generate_password_hash(password)):
+    if check_password_hash(df['password'].iloc[0], password):
       return True
     else:
       return False
     return False
 
-def send_sms(name, num):
+def send_sms(name, num, account_sid, auth_token):
   from twilio.rest import Client
     
   # Find your Account SID and Auth Token at twilio.com/console
   # and set the environment variables. See http://twil.io/secure
-  account_sid = 'ACb192042134fe10e46b6d213e762732fa'
-  auth_token = '1e81cefe7d98614c7144deb9b93adfaa'
+  
   client = Client(account_sid, auth_token)
   
   message = client.messages \
       .create(
-           body= f'Dear {name}, this is a test SMS sent from Flask.',
+           body= f'Dear {name}, this is a test SMS sent from Flask WebApp.',
            from_='+18777432015',
            to=num
        )
