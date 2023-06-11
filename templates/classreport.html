@@ -12,7 +12,7 @@
       <h4> Report student performance accurately! <br><br>
       </h4>
       
-      <form method = ["GET", "POST"] action = "/submitted">
+      <form method = ["GET", "POST"] action = "submitted">
         {{ form.csrf_token }}
 
         {{ renderfield(form.date) }}
@@ -59,19 +59,21 @@
                 <table class="table table-striped table-hover">
                   <tbody>
                   <tr>
-                    <th class = table-header >Student Name</th>
+                    <th class = table-header >Count</th>
+                    <th class = table-header >Student</th>
                     {% for heading in headings %}
                     <th class = table-header> {{ heading }} </th>
                     {% endfor %}
                   </tr>
                   
-                    {% for row in data %}
+                    {% for row in range(data|length) %}
                       <tr class = table-row>
                         <td class = table-cell> {{ row }} </td>
-                        <td class = table-cell> <input type="checkbox" name="attendance" id = row.id > </td>
-                        <td class = table-cell> <input type="checkbox" name="homework"> </td>
+                        <td class = table-cell> {{  data.iloc[row]['Student Name'] }} </td>
+                        <td class = table-cell> <input type="checkbox" name="attendance" value = {{row}} </td>
+                        <td class = table-cell> <input type="checkbox" name="homework" value = {{row}}> </td>
                         <td class = table-cell>
-                          <select name="performance" id="performance">
+                          <select name="performance" id="performance" value = {{ row }}>
                             <option> </option>
                     				<option>Excels</option>
                     				<option>As expected</option>
@@ -80,9 +82,9 @@
                     			</select>
                         </td>
                         <td class = table-cell>
-                          <input name="comment" id="comment">
+                          <input name="comment" id= {{row}} value = "">
                         </td>
-                        <td class = table-cell> <input type="checkbox" name="sms"> </td>
+                        <td class = table-cell> <input type="checkbox" name="sms" value = {{row}}> </td>
 
                       {% endfor %}
                       </tr>
@@ -104,7 +106,7 @@
       </fieldset>
 
         <!--button type="button" class="btn btn-primary" onclick="submitted()">Submit</button-->
-        <input type = "submit" value="Submit" class="btn btn-primary">
+        <input type = "submit" value="Submit" class="btn btn-primary" onclick="save_data()">
 
       </form>
 

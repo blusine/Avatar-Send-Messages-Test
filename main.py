@@ -1,11 +1,12 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_wtf import FlaskForm, CSRFProtect
-from wtforms import StringField, PasswordField, DateField, RadioField
+from wtforms import StringField, PasswordField, DateField, FieldList, FormField, BooleanField
+#from wtforms import RadioField, TextAreaField, SelectField
+
 from wtforms.validators import InputRequired, Email
 from datetime import date as dt
 
-
-from utils import read_data, send_sms, save_data
+from utils import read_data, fix_a_num, send_sms
 
 app = Flask('__name__')
 csrf = CSRFProtect(app)
@@ -18,11 +19,29 @@ class LoginForm(FlaskForm):
   password = PasswordField('Zoom Password:', validators=[InputRequired(),] )
   classroom = StringField('Class Code:', validators=[InputRequired(),] )
 
+class RowForm(FlaskForm):
+  student = StringField('Student')
+  #attendance = BooleanField('Attendance')
+  #homework = BooleanField('Homework')
+  #performance = SelectField('Performance')
+  sms = BooleanField('sms')
+  #comments = StringField('Comments')
+  phone = StringField('Phone')
+  #Attendance	Homework	Academic Performance	Comments	Tardy - Send SMS
+
+
+#class TableForm(FlaskForm):
+#    rows = FieldList(FormField(RowForm))
+  
 class ReportForm(FlaskForm):
   date = DateField(description="Class Date")
   classroom = StringField('Class Code:', validators=[InputRequired(),] )
   teachername = StringField("Teacher's Name", validators=[InputRequired(),] )
-  difficultylevel = RadioField()
+  #difficultylevel = RadioField()
+  rows = FieldList(FormField(RowForm))
+  #general_comments = TextAreaField()
+  #students = TableForm()
+  #Student = namedtuple('Student', ['name', 'attenance', 'homework', 'performance', 'comments', 'sms'])
   
 
 @app.route('/', methods = ["POST", "GET"])
@@ -33,11 +52,18 @@ def login():
     if (df is not None) & (not df.empty):
       teachername = df["Teacher"].iloc[0]
       form2 = ReportForm(teachername = teachername, date = dt.today())
-      #classroom = request.form.get('classroom')
-      df2 = list(df["Student Name"])
+      #form2 = TableForm()
+      #df2 = list(df["Student Name"])
+      #df3 = list(df["Parent phone"])
+      df["Parent phone"] = df["Parent phone"].apply(lambda x: fix_a_num(x))
+      df2 = df[["Student Name", "Parent phone"]]
+      
+      #print("phone2 ", df2['Parent phone'])
       headings = ['Attendance', 'Homework', 'Academic Performance',
                   'Comments', 'Tardy - Send SMS']
-      return render_template('classreport.html', form = form2, headings = headings, data = df2)
+      headings = ['Tardy - Send SMS']
+      #return render_template('classreport.html', form = form2, headings = headings, data = df2)
+      return render_template('smsreport.html', form = form2, headings = headings, data = df2)
     else:
       header_message = "Wrong Input"
       body_message = "Incorrect Email, Password or Class Code"
@@ -47,18 +73,54 @@ def login():
 
 @app.route('/classreport', methods = ["GET", "POST"])
 def classreport():
-  form2 = ReportForm()
-  return render_template('classreport.html', form = form2)
+  form = ReportForm()
+  if form.validate_on_submit():
+    result = request.form.data
+    print("sms2: ", result)
+    #r2 = save_data(result)
+    #header_message = "Thank you!"
+    #body_message = "Avatar Learning Center Classroom Report Form has been submitted."
+    redirect(url_for('submitted'))
+    
+  return render_template('classreport.html', form = form)
+
+@app.route('/smsreport', methods = ["GET", "POST"])
+def smsreport():
+  #form = TableForm()
+  #if request.method == "POST":
+  form = request.form
+    #result = request.form.getlist("sms")
+  #r2 = save_data(result)
+  #print("sms2: ", form.to_dict())
+    #r2 = save_data(result)
+    #redirect(url_for('submitted'))
+  return render_template('smsreport.html', form = form)
 
 @app.route('/submitted', methods = ["GET", "POST"])
 def submitted():
-  header_message = "Thank you!"
-  body_message = "Avatar Learning Center Classroom Report Form has been submitted."
-  #if request.method == 'POST':
-  result = request.form
-  save_data(result)
-  #return render_template('submitted.html')
-  return redirect(url_for('error_message', header_message=header_message , body_message=body_message))
+  #result = request.form.getlierrorst("sms")
+  #result = request.form
+  #result = request.form.get("sms", False)
+  #result = request.form["sms"]
+
+  form = request.form
+  #print("from submitted1: ", form.to_dict())
+  print("from submitted2: ", form.getlist("sms"))
+  print("from submitted3: ", form.getlist("phone"))
+  print("from submitted4: ", form.getlist("student"))
+  to_sms = form.getlist("sms")
+  print("sms3: ", to_sms)
+  phone_numbers = form.getlist("phone")
+  student_names = form.getlist("student")
+  for sms in to_sms:
+    sms_int = int(sms)
+    print("name" , student_names[sms_int])
+    print("phone", phone_numbers[sms_int])
+    send_sms(student_names[sms_int], phone_numbers[sms_int])
+  
+  header_message="Thank you!"
+  body_message="Avatar Learning Center Classroom Report Form has been submitted."
+  return render_template("error.html", header_message=header_message, body_message=body_message)
   
 @app.route('/error/<header_message>/<body_message>' , methods = ["GET", "POST"])
 def error_message(header_message, body_message):
