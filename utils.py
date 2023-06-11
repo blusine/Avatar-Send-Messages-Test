@@ -4,12 +4,13 @@ def read_data(username, password, classcode):
   x = os.getcwd()
   if username_validator(username, password):
     df = pd.read_csv(x + '/data/ALC_Class_Report_Test.csv')
+   
+    df['Zoom'] = df['Zoom'].apply(lambda x: str(x).strip())
+    df['ClassCode'] = df['ClassCode'].apply(lambda x: str(x).strip())
     df = df[df['Zoom'] == username]
     df = df[df['ClassCode'] == classcode]
-    
     cols = [
-      'Parent Name', 'Parent email', 'Student Name', 'AvatarGrade', 'Teacher',
-      'Zoom', 'Password', 'Parent phone', 'ClassCode'
+      'Parent Name', 'Student Name', 'AvatarGrade', 'Teacher', 'Zoom', 'Parent phone', 'ClassCode'
     ]
     
     df = df[cols]
@@ -31,9 +32,7 @@ def username_validator(username, password):
     #if (df['password'].iloc[0] == generate_password_hash(password)):
     if check_password_hash(df['password'].iloc[0], password):
       return True
-    else:
-      return False
-    return False
+  return False
 
 def send_sms(name, num, account_sid, auth_token):
   from twilio.rest import Client
@@ -71,14 +70,3 @@ def classcode_validator(username, classcode):
     return True
   else:
     return False
-
-def save_data():
-  from flask import request
-  print("Here")
-  result = request.form.getlist("sms")
-  #r2 = save_data(result)
-  print("sms2: ", result)  
-  return f'<h1> result </h1> <br><br> <h2> {result} </h2'
-
-def clean_phone(phone):
-  return list(map(lambda x: fix_a_num(x), phone))
