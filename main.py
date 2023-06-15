@@ -44,6 +44,7 @@ class RowForm(FlaskForm):
 class ReportForm(FlaskForm):
   date = DateField(description="Class Date")
   classroom = StringField('Class Code:', validators=[InputRequired(),] )
+  avatargrade = StringField('Avatar Grade:')
   teachername = StringField("Teacher's Name", validators=[InputRequired(),] )
   #difficultylevel = RadioField()
   rows = FieldList(FormField(RowForm))
@@ -55,13 +56,15 @@ class ReportForm(FlaskForm):
 @app.route('/', methods = ["POST", "GET"])
 def login():
   #form = LoginForm(username = "avatarmath.space.9@gmail.com", classroom = "v6sl7dl")
-  form = LoginForm(username = "avatarmath.space.6@gmail.com", classroom = "pzlal6y")
-  
+  #form = LoginForm(username = "avatarmath.space.6@gmail.com", classroom = "pzlal6y")
+  form = LoginForm()
+
   if form.validate_on_submit():
     df = read_data(form.username.data, form.password.data, form.classroom.data)
     if (df is not None) & (not df.empty):
       teachername = df["Teacher"].iloc[0]
-      form2 = ReportForm(teachername = teachername, date = dt.today())
+      avatargrade = df["AvatarGrade"].iloc[0]
+      form2 = ReportForm(teachername = teachername, avatargrade = avatargrade, date = dt.today())
       df["Parent phone"] = df["Parent phone"].apply(lambda x: fix_a_num(x))
       df2 = df[["Student Name", "Parent phone"]]
       
