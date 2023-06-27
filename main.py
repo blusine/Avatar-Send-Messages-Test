@@ -15,7 +15,7 @@ app.config['SECRET_KEY'] = 'Mysecret!'
 app.jinja_env.lstrip_blocks = True
 app.jinja_env.trim_blocks = True
 
-filename = os.getcwd() + "/data/twilio_keys.json"
+filename = os.getcwd() + "/static/twilio_keys.json"
 with open(filename) as test_file:
     twilio_keys = json.load(test_file)
 print("twilio_keys, ", twilio_keys)
