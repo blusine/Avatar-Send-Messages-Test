@@ -7,9 +7,9 @@ python-dateutil
 requests
 flask-wtf
 twilio
-OSErrorwerkzeug
+#OSErrorwerkzeug
 re
-itsdangerous
+#itsdangerous
 wtforms
 datetime
 os
