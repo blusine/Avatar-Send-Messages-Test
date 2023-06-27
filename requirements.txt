@@ -7,7 +7,7 @@ python-dateutil
 requests
 flask-wtf
 twilio
-re
+regex
 wtforms
 datetime
 os
